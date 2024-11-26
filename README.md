@@ -35,7 +35,7 @@
 
 这里在网络收集了一些发布工具，可供参考：
 
-openWrite：一款收费的一文多发软件，通过添加浏览器插件在网站页面上完成文章的发布，支持多个平台，使用较为简便，缺点是要钱，用户cookie会被上传；
+openWrite：一款收费的一文多发软件，通过添加浏览器插件在网站页面上完成文章的发布，支持多个平台，使用较为简便，缺点是部分功能收费，用户cookie会被上传；
 
 blog-auto-publishing-tools：使用selenium浏览器自动化模拟用户发布操作，支持的平台挺多，自动化方式可以保证功能上的长期稳定，维护起来也较为方便，项目地址：https://github.com/ddean2009/blog-auto-publishing-tools/tree/main
 
