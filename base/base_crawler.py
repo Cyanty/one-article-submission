@@ -14,6 +14,9 @@ class AbstractCrawler(ABC):
         "toc"
     ]
 
+    SUCCESS_RESULT = "太棒了，文章发布成功~!"
+    FAILURE_RESULT = "文章发布失败了，好事多磨嘛!"
+
     @abstractmethod
     async def article_path_proc(self, file_name: str, md_content: str):
         pass

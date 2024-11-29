@@ -5,6 +5,7 @@ from DrissionPage._base.chromium import Chromium
 from DrissionPage._configs.chromium_options import ChromiumOptions
 from DrissionPage._pages.chromium_page import ChromiumPage
 import re
+from utils import logger
 
 __author__ = 'lcy'
 
@@ -40,7 +41,8 @@ def tab_cookies_to_dict(brower_cookies_list):
 
 
 def start_chromium_browser():
-    print('start chromium')
+    logger.info('start chromium page')
+    global page
     page = get_chromium_page()
     brower_cookies_as_json = page.cookies(all_domains=True, all_info=False).as_json()
     brower_cookies_list = json.loads(brower_cookies_as_json)
@@ -53,6 +55,10 @@ def get_chromium_page():
     co.set_local_port(9222)
     co.use_system_user_path()
     return ChromiumPage(addr_or_opts=co)
+
+
+def get_chromium_page_single():
+    return page
 
 
 def get_cookies_from_chromium(cookies_key: str) -> Dict[str, str]:

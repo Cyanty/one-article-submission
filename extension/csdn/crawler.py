@@ -1,9 +1,11 @@
+import logging
 from typing import Optional, List, Dict, Any
 
 from DrissionPage._functions.keys import Keys
 from base import AbstractCrawler
-from environment import get_chromium_page
+from environment import get_chromium_page_single
 from extension.csdn import CsdnClient
+from utils import logger
 
 
 class CsdnCrawler(AbstractCrawler):
@@ -17,10 +19,12 @@ class CsdnCrawler(AbstractCrawler):
         self._csdnClient.md_content = md_content
 
     async def init_config(self, source_type: str, file_name: str, md_content: str, image_results=None):
+        logger.info("CSDN 开始初始化文章操作")
         await self.article_path_proc(file_name, md_content)
 
     async def run(self):
-        tab = get_chromium_page().new_tab()
+        logger.info("CSDN 开始发布文章")
+        tab = get_chromium_page_single().new_tab()
         tab.get("https://editor.csdn.net/md/")  # tab_csdn.get("https://mp.csdn.net/mp_blog/creation/editor")
         try:
             tab.actions \
@@ -35,9 +39,10 @@ class CsdnCrawler(AbstractCrawler):
                 .click(on_ele=tab.ele(self._csdnClient.loc_close_button)) \
                 .click(on_ele=tab.ele(self._csdnClient.loc_publish_button))
             tab.wait.load_start()
-            return {'CSDN 发布文章成功'}
+            return {'result': AbstractCrawler.SUCCESS_RESULT}
         except Exception as e:
-            return {f'CSDN 发布文章失败，报错原因：{e}'}
+            logging.error(f'CSDN 发布文章失败，报错原因：{e}')
+            return {'result': AbstractCrawler.FAILURE_RESULT}
         finally:
             tab.close()
 

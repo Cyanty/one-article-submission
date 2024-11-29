@@ -9,6 +9,8 @@ import environment
 
 __author__ = 'lcy'
 
+from config import WEB_SETUP_SOURCE as source_type
+from web import *
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")  # 挂载静态文件
@@ -17,12 +19,25 @@ templates = Jinja2Templates(directory="templates")  # 创建一个templates（�
 
 @app.get("/", response_class=HTMLResponse)
 async def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "result_dict": None})
+    return templates.TemplateResponse("index.html", {"request": request, "result_dict": get_result_dict()})
+
+
+@app.get("/state")
+async def toggle_switch(request: Request):
+    return source_type
+
+
+@app.post("/toggle")
+async def toggle_switch(request: Request, toggle_state: ToggleState):
+    if toggle_state.type in source_type:
+        source_type[toggle_state.type] = toggle_state.new_state
+    return {"response": 200}
+
 
 @app.get("/refresh", response_class=HTMLResponse)
 async def read_root_post(request: Request):
     environment.refresh_cookies()
-    return templates.TemplateResponse("index.html", {"request": request, "refresh": "刷新cookies成功~"})
+    return "success"
 
 
 @app.post("/uploader/", response_class=HTMLResponse)

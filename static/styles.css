@@ -1,0 +1,156 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-image: url('https://www.dmoe.cc/random.php'); /* 替换为你的图片路径 */
+    background-size: cover; /* 使背景图片覆盖整个页面 */
+    background-position: center; /* 使背景图片居中 */
+    /*background-repeat: no-repeat; !* 防止背景图片重复 *!*/
+    padding: 0; /* 去除默认的页面内边距 */
+    height: 100vh; /* 使页面高度占满整个视口 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white; /* 设置文字颜色为白色，以便在深色背景上清晰显示 */
+}
+.container {
+    max-width: 1200px;
+    width: 70%;
+    margin: 0 auto;
+    padding: 30px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    background-color: rgba(0, 0, 0, 0.5); /* 设置半透明背景色，以便内容更清晰 */
+}
+.form-group {
+    margin-bottom: 20px; /* 调整行间距 */
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    margin-right: 20px;
+}
+input[type="file"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #0056b3;
+}
+.result {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+}
+
+/* 开关按钮的样式 */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+.shifted-text {
+    position: relative;
+    top: 10px; /* 向下偏移 5px */
+    font-family: 'Arial', sans-serif; /* 设置字体为 Arial */
+}
+hr {
+    border: 0; /* 清除默认边框 */
+    height: 1px; /* 设置高度 */
+    background-color: #ccc; /* 设置背景颜色 */
+    margin: 20px 0; /* 设置上下边距 */
+}
+
+h1 {
+    text-align: center;
+}
+h2 {
+    text-align: center;
+    /*color: #333;*/
+}
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.2);
+}
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+th {
+    background-color: rgba(242, 242, 242, 0.2);
+    /*color: #555;*/
+}
+tr:hover {
+    background-color: rgba(245, 245, 245, 0.2);
+}
+.result {
+    font-family: monospace;
+    background-color: rgba(245, 245, 245, 0.2);
+    /*color: #007BFF;*/
+}

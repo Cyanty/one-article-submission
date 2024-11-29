@@ -1,9 +1,10 @@
 DrissionPage==4.1.0.9
-fastapi==0.115.4
+fastapi~=0.112.2
 httpx==0.27.2
 markdown2==2.5.1
 pypinyin==0.53.0
 Requests==2.32.3
-tenacity==8.2.3
+tenacity~=8.5.0
 tenacity==8.5.0
-uvicorn==0.32.0
+uvicorn~=0.30.6
+pydantic~=2.8.2

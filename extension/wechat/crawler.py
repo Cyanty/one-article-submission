@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import asyncio
 import json
+import logging
 import re
 from typing import Optional, List, Dict, Any
 
@@ -9,7 +10,7 @@ import markdown2
 from base import AbstractCrawler
 from config import wechat_public_account
 from extension.wechat import WeChatClient
-from utils import request
+from utils import request, logger
 
 
 class WeChatCrawler(AbstractCrawler):
@@ -30,6 +31,7 @@ class WeChatCrawler(AbstractCrawler):
 
     async def init_config(self, source_type: str, file_name: str, md_content: str,
                           image_results: Optional[List[Dict[str, Any]]]):
+        logger.info("WECHAT 开始初始化文章并处理图片链接")
         status_code, access_token_json = await request(method="POST",
                                                        url="https://api.weixin.qq.com/cgi-bin/stable_token",
                                                        json_data=wechat_public_account,
@@ -52,15 +54,17 @@ class WeChatCrawler(AbstractCrawler):
             self._weChatClient.json_data = media_id_json["media_id"]
 
     async def run(self):
+        logger.info("WECHAT 开始发布文章")
         status_code, result_json = await request("POST",
                                                  url=self._weChatClient.publish_url,
                                                  json_data=self._weChatClient.json_data,
                                                  headers=self._weChatClient.headers,
                                                  timeout=10)
         if 200 <= status_code < 300 and result_json.get("errmsg") == "ok":
-            return {'WeChat 发布文章成功!'}
+            return {'result': AbstractCrawler.SUCCESS_RESULT}
         else:
-            return {'WeChat 发布文章失败!'}
+            logging.error("WECHAT 发布文章失败，错误原因：{}", result_json)
+            return {'result': AbstractCrawler.FAILURE_RESULT}
 
     async def image_process(self, image_results):
         if image_results:
