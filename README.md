@@ -36,7 +36,7 @@
 
 将程序打包成.exe或在开发的ide上运行，程序会自动打开谷歌浏览器（必须关闭本地已经运行的谷歌浏览器），访问http://127.0.0.1:8000/，页面如下：
 
-![](https://github.moeyy.xyz/https://raw.githubusercontent.com/Cyanty/images/main/collect/Snipaste_2024-11-29_17-25-32.png)
+![](https://raw.githubusercontent.com/Cyanty/images/main/collect/Snipaste_2024-11-29_17-25-32.png)
 
 默认开启所有的发布源，点击页面的”选择文件“进行本地.md文件的上传，然后点击上传；
 
@@ -44,7 +44,7 @@
 
 等待文章发布完，在页面发布结果中会更新发布文章的状态，比如下面的发布结果：
 
-![](https://github.moeyy.xyz/https://raw.githubusercontent.com/Cyanty/images/main/collect/Snipaste_2024-11-29_17-47-21.png)
+![](https://raw.githubusercontent.com/Cyanty/images/main/collect/Snipaste_2024-11-29_17-47-21.png)
 
 接下来就可以在各发布源平台上看到自己发布的文章了。
 
