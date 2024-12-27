@@ -1,7 +1,9 @@
+import asyncio
 import time
+from threading import Thread
 from typing import Dict
 from base import AbstractCrawler
-from environment import get_chromium_page_single
+from environment import get_chromium_browser_signal
 from extension.juejin import JueJinClient
 from utils import *
 
@@ -9,6 +11,7 @@ from utils import *
 class JueJinCrawler(AbstractCrawler):
 
     def __init__(self):
+        self.type_crawler = "JueJin Crawler"
         self._jueJinClient = JueJinClient()
 
     async def article_path_proc(self, file_name: str, md_content: str) -> Dict:
@@ -21,7 +24,7 @@ class JueJinCrawler(AbstractCrawler):
         }
 
     async def init_config(self, source_type: str, file_name: str, md_content: str, image_results=None):
-        logger.info("JueJin 开始初始化文章操作")
+        logger.info(f"[{self.type_crawler}] Start initializing the article operation.")
         value: dict = await self.article_path_proc(file_name, md_content)
         self._jueJinClient.cookies = source_type
         self._jueJinClient.create_json_data = value
@@ -36,33 +39,17 @@ class JueJinCrawler(AbstractCrawler):
             self._jueJinClient.json_data = value
 
     async def run(self):
-        logger.info("JueJin 开始发布文章")
+        logger.info(f'[{self.type_crawler}] Start publishing articles.')
         code, result = await self.request_post(
             url_type=self._jueJinClient.pre_publish_url,
             json_data_type=self._jueJinClient.pre_json_data
         )
         if 200 <= code < 300 and result['err_msg'] == 'success':
-            tab = get_chromium_page_single().new_tab()
-            tab.get('https://juejin.cn/editor/drafts/' + self._jueJinClient.host)
-            try:
-                time.sleep(1)  # 等待页面装载外链图片
-                tab.actions \
-                    .click(on_ele=tab.ele(self._jueJinClient.loc_publish_button)).wait(0.5) \
-                    .click(on_ele=tab.ele(self._jueJinClient.loc_confirm_publish_button)).wait(1)
-                tab.wait.load_start()
-                return {'result': AbstractCrawler.SUCCESS_RESULT}
-            except Exception as e:
-                logger.error(f'JueJin 发布文章失败，报错原因：{e}')
-                return {'result': AbstractCrawler.FAILURE_RESULT}
-            finally:
-                tab.close()
-
-            # code, result = await self.request_post(
-            #     url_type=self._jueJinClient.publish_url,
-            #     json_data_type=self._jueJinClient.json_data
-            # )
+            browser, executor = get_chromium_browser_signal()
+            loop = asyncio.get_running_loop()
+            return await loop.run_in_executor(executor, self.tab_publish_actions, browser)
         else:
-            logger.error('JueJin 发布文章失败，请求响应结果：' + str(result))
+            logging.error(f'[{self.type_crawler}] Failure to publish the article! Cause of error: Http Response Text -> {str(result)}')
             return {'result': AbstractCrawler.FAILURE_RESULT}
 
     async def request_post(self, url_type, json_data_type):
@@ -75,5 +62,19 @@ class JueJinCrawler(AbstractCrawler):
                              timeout=10
                              )
 
+    def tab_publish_actions(self, browser) -> Dict:
+        tab = browser.new_tab()
+        try:
+            tab.get('https://juejin.cn/editor/drafts/' + self._jueJinClient.host)
+            tab.actions \
+                .click(on_ele=tab.ele(self._jueJinClient.loc_publish_button)).wait(0.5) \
+                .click(on_ele=tab.ele(self._jueJinClient.loc_confirm_publish_button)).wait(1)
+            tab.wait.load_start()
+            return {'result': AbstractCrawler.SUCCESS_RESULT}
+        except Exception as e:
+            logger.error(f'[{self.type_crawler}] Failure to publish the article! Cause of error:{e}')
+            return {'result': AbstractCrawler.FAILURE_RESULT}
+        finally:
+            tab.close()
 
 

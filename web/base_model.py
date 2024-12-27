@@ -11,7 +11,7 @@ class ToggleState(BaseModel):
 def get_result_dict():
     result_dict = {}
     for source in Source:
-        result_dict[source.name] = {'result': '还没有要发布文章啦~'}
+        result_dict[source.name] = {'result': '还没有要发布文章~'}
     return result_dict
 
 

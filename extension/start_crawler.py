@@ -26,7 +26,7 @@ class CrawlerFactory:
     def create_crawler(source_name: str) -> AbstractCrawler:
         crawler_class = CrawlerFactory.CRAWLERS.get(source_name)
         if not crawler_class:
-            logger.error("未定义此来源的发布模块...")
+            logger.error("Warning: Publish module not defined for this source...")
         return crawler_class()
 
 
@@ -37,7 +37,7 @@ def config_feature(source_name: str):
             if WEB_SETUP_SOURCE.get(source_name, False):
                 return await func(*args, **kwargs)
             else:
-                return {f"来源 {source_name} 未启用"}
+                return {f"来源 < {source_name} > 未启用"}
         return async_wrapper
     return decorator
 
@@ -57,7 +57,7 @@ async def image_request(md_content: str):
 
 async def crawlers_start(file_name: str, md_content: str):
     file_name = file_name.split(".")[0]
-    logger.info(f"开始发布文章: {file_name}")
+    logger.info(f"----- Enable publishing the article -> {file_name} -----")
     image_results = await image_request(md_content)
     result_dict = {}
     tasks = []
@@ -78,7 +78,7 @@ async def crawlers_start(file_name: str, md_content: str):
     for source, result in zip(Source, results):
         result_dict[source.name] = result
 
-    logger.info("文章发布完毕！")
+    logger.info("----- The article publishing process is complete! -----")
     return result_dict
 
 

@@ -9,6 +9,7 @@ from utils import *
 class HaloCrawler(AbstractCrawler):
 
     def __init__(self):
+        self.type_crawler = "Halo Crawler"
         self._haloClient = HaloClient()
 
     async def article_path_proc(self, file_name: str, md_content: str) -> Dict:
@@ -27,7 +28,7 @@ class HaloCrawler(AbstractCrawler):
         }
 
     async def init_config(self, source_type: str, file_name: str, md_content: str, image_results):
-        logger.info("Halo 开始初始化文章并处理图片链接")
+        logger.info(f"[{self.type_crawler}] Start initializing and processing image links.")
         self._haloClient.host = source_type
         self._haloClient.cookies = source_type
         results = await self.image_process(image_results)
@@ -38,7 +39,7 @@ class HaloCrawler(AbstractCrawler):
         self._haloClient.json_data = await self.article_path_proc(file_name, md_content)
 
     async def run(self):
-        logger.info("Halo 开始发布文章")
+        logger.info(f'[{self.type_crawler}] Start publishing articles.')
         code, result = await request(method="POST",
                                      url=self._haloClient.pre_publish_url,
                                      cookies=self._haloClient.cookies,
@@ -47,7 +48,7 @@ class HaloCrawler(AbstractCrawler):
                                      timeout=10
                                      )
         if not (200 <= code < 300):
-            logging.error('Halo 发布文章失败，请求响应结果：', result)
+            logging.error(f'[{self.type_crawler}] Failure to publish the article! Cause of error: Http Response Code -> {result}')
             return {'result': AbstractCrawler.FAILURE_RESULT}
         # code, result = await request(method="PUT",
         #                              url=self._haloClient.publish_url + '/publish',
@@ -56,7 +57,7 @@ class HaloCrawler(AbstractCrawler):
         #                              timeout=10
         #                              )
         # if not (200 <= code < 300):
-        #     return {'Halo 发布文章失败，请求响应结果：': result}
+        #     return {'result': AbstractCrawler.FAILURE_RESULT}
         return {'result': AbstractCrawler.SUCCESS_RESULT}
 
     async def image_process(self, image_results):
@@ -86,7 +87,3 @@ class HaloCrawler(AbstractCrawler):
             if 200 <= status_code < 300:
                 return {"old_image_url": image_result["image_url"], "new_image_url": "/upload/" + image_filename}
 
-
-# async def main():
-#     await HaloCrawler().init_configs()
-# asyncio.run(main())

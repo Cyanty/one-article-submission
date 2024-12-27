@@ -8,6 +8,7 @@ from tenacity import retry, stop_after_attempt, wait_fixed, RetryError
 
 class CnBlogsCrawler(AbstractCrawler):
     def __init__(self):
+        self.type_crawler = "CnBlogs Crawler"
         self._cnBlogsMetaBlogClient = CnBlogsMetaBlogClient()
         self._cnBlogsMetaBlogClient.read_config()
         self.post_data = None
@@ -22,7 +23,7 @@ class CnBlogsCrawler(AbstractCrawler):
         }
 
     async def init_config(self, source_type: str, file_name: str, md_content: str, image_results):
-        logger.info(f"CNBLOGS 开始初始化并处理图片链接")
+        logger.info(f"[{self.type_crawler}] Start initializing and processing image links.")
         results = await self.image_process(image_results)
         if results:
             for image_path in results:
@@ -31,12 +32,12 @@ class CnBlogsCrawler(AbstractCrawler):
         self.post_data = await self.article_path_proc(file_name, md_content)
 
     async def run(self):
-        logger.info(f'CNBLOGS 开始发布文章!')
+        logger.info(f'[{self.type_crawler}] Start publishing articles.')
         try:
             post_id = await self.new_post()  # 发布文章返回的文章id
             return {'result': AbstractCrawler.SUCCESS_RESULT}
         except RetryError as e:
-            logger.info(f'CNBLOGS 发布文章失败! 报错原因:{e.last_attempt.exception()}')  # 获取最后一次重试的异常
+            logger.info(f'[{self.type_crawler}] Failure to publish the article! Cause of error:{e.last_attempt.exception()}')  # 获取最后一次重试的异常
             return {'result': AbstractCrawler.FAILURE_RESULT}
 
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))

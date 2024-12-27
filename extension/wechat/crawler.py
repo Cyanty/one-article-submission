@@ -15,6 +15,7 @@ from utils import request, logger
 
 class WeChatCrawler(AbstractCrawler):
     def __init__(self):
+        self.type_crawler = "WeChat Crawler"
         self._weChatClient = WeChatClient()
 
     async def article_path_proc(self, file_name: str, md_content: str):
@@ -31,7 +32,7 @@ class WeChatCrawler(AbstractCrawler):
 
     async def init_config(self, source_type: str, file_name: str, md_content: str,
                           image_results: Optional[List[Dict[str, Any]]]):
-        logger.info("WECHAT 开始初始化文章并处理图片链接")
+        logger.info(f"[{self.type_crawler}] Start initializing and processing image links.")
         status_code, access_token_json = await request(method="POST",
                                                        url="https://api.weixin.qq.com/cgi-bin/stable_token",
                                                        json_data=wechat_public_account,
@@ -49,12 +50,11 @@ class WeChatCrawler(AbstractCrawler):
                                                    content=json_data,
                                                    headers=self._weChatClient.headers,
                                                    timeout=10)
-
         if 200 <= status_code < 300:
             self._weChatClient.json_data = media_id_json["media_id"]
 
     async def run(self):
-        logger.info("WECHAT 开始发布文章")
+        logger.info(f'[{self.type_crawler}] Start publishing articles.')
         status_code, result_json = await request("POST",
                                                  url=self._weChatClient.publish_url,
                                                  json_data=self._weChatClient.json_data,
@@ -63,7 +63,7 @@ class WeChatCrawler(AbstractCrawler):
         if 200 <= status_code < 300 and result_json.get("errmsg") == "ok":
             return {'result': AbstractCrawler.SUCCESS_RESULT}
         else:
-            logging.error("WECHAT 发布文章失败，错误原因：{}", result_json)
+            logging.error(f"[{self.type_crawler}] Failure to publish the article! Cause of error:{str(result_json)}")
             return {'result': AbstractCrawler.FAILURE_RESULT}
 
     async def image_process(self, image_results):

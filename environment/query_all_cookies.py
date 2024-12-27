@@ -4,6 +4,7 @@ from typing import Dict
 from DrissionPage._base.chromium import Chromium
 from DrissionPage._configs.chromium_options import ChromiumOptions
 from DrissionPage._pages.chromium_page import ChromiumPage
+from concurrent.futures import ThreadPoolExecutor
 import re
 from utils import logger
 
@@ -41,24 +42,24 @@ def tab_cookies_to_dict(brower_cookies_list):
 
 
 def start_chromium_browser():
-    logger.info('start chromium page')
-    global page
-    page = get_chromium_page()
-    brower_cookies_as_json = page.cookies(all_domains=True, all_info=False).as_json()
+    logger.info('start chromium browser')
+    global browser
+    if browser is None:
+        browser = get_chromium_browser()
+    brower_cookies_as_json = browser.cookies(all_info=False).as_json()
     brower_cookies_list = json.loads(brower_cookies_as_json)
     tab_cookies_to_dict(brower_cookies_list)
-    # page.disconnect()
 
 
-def get_chromium_page():
+def get_chromium_browser():
     co = ChromiumOptions()
     co.set_local_port(9222)
     co.use_system_user_path()
-    return ChromiumPage(addr_or_opts=co)
+    return Chromium(addr_or_opts=co)
 
 
-def get_chromium_page_single():
-    return page
+def get_chromium_browser_signal():
+    return browser, executor
 
 
 def get_cookies_from_chromium(cookies_key: str) -> Dict[str, str]:
@@ -69,12 +70,14 @@ def refresh_cookies():
     start_chromium_browser()
 
 
+browser = None
+executor = ThreadPoolExecutor(max_workers=20)
 _all_cookies_dicts = {}
-# page = ChromiumPage()
 start_chromium_browser()
 
 
 # print(_all_cookies_dicts)
+# print(browser)
 
 
 """

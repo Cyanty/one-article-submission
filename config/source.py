@@ -2,7 +2,7 @@ from enum import Enum, unique
 
 # 指定自定义服务的IP地址列表
 CUSTOM_URL_LIST = {
-    'HALO': '192.168.1.1',
+    'HALO': '192.168.1.189',
 }
 
 
@@ -24,10 +24,11 @@ WEB_SETUP_SOURCE = {
     Source.CSDN.name: True,
     Source.JUEJIN.name: True,
     Source.CNBLOGS.name: True,
-    Source.WECHAT.name: True,
+    Source.WECHAT.name: False,
     Source.BAIDU.name: False,
     Source.HALO.name: True,
 }
+
 
 
 
